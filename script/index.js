@@ -13,6 +13,15 @@ function loadVideos() {
     .then((data) => displayVideos(data.videos));
 }
 
+const loadCategoryVideos = (id) => {
+  const url = `https://openapi.programming-hero.com/api/phero-tube/category/${id}`;
+  console.log(url);
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => displayVideos(data.category));
+};
+
 function displayCategories(categories) {
   // get the container
   const categoryContainer = document.getElementById("category-container");
@@ -22,7 +31,7 @@ function displayCategories(categories) {
     // create Element
     const categoryDiv = document.createElement("div");
     categoryDiv.innerHTML = `
-        <button class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
+        <button onclick ="loadCategoryVideos(${cat.category_id})" class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
     `;
     // Append the Element
     categoryContainer.append(categoryDiv);
@@ -50,6 +59,7 @@ function displayCategories(categories) {
 
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("video-container");
+  videoContainer.innerHTML = "";
   videos.forEach((video) => {
     console.log(video);
     const videoCard = document.createElement("div");
@@ -69,22 +79,22 @@ const displayVideos = (videos) => {
                 class="ring-primary ring-offset-base-100 w-7 rounded-full ring ring-offset-2"
               >
                 <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  src="${video.authors[0].profile_picture}"
                 />
               </div>
             </div>
           </div>
           <div class="intro">
-            <h2 class="text-sm font-semibold">Midnight Serenade</h2>
+            <h2 class="text-sm font-semibold">${video.title}</h2>
             <p class="text-sm text-gray-400 flex gap-1">
-              Awlad Hossain
+              ${video.authors[0].profile_name}
               <img
                 class="w-5 h-5"
                 src="https://img.icons8.com/?size=96&id=98A4yZTt9abw&format=png"
                 alt=""
               />
             </p>
-            <p class="text-sm text-gray-400">91K views</p>
+            <p class="text-sm text-gray-400">${video.others.views}</p>
           </div>
         </div>
       </div>
@@ -94,4 +104,3 @@ const displayVideos = (videos) => {
 };
 
 loadCategories();
-loadVideos();
